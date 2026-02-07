@@ -1,0 +1,115 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:477273669783013897",
+      "lastPropertyId": "12:4408383742068396147",
+      "name": "TickerEntity",
+      "properties": [
+        {
+          "id": "1:2814459175052402350",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4273298668090867394",
+          "name": "symbol",
+          "indexId": "1:8016379858016245136",
+          "type": 9,
+          "flags": 34848
+        },
+        {
+          "id": "3:4490096888114673431",
+          "name": "lastPrice",
+          "type": 8
+        },
+        {
+          "id": "4:2360670576321116238",
+          "name": "openPrice",
+          "type": 8
+        },
+        {
+          "id": "5:2742340243880327812",
+          "name": "highPrice",
+          "type": 8
+        },
+        {
+          "id": "6:3689802043353928527",
+          "name": "lowPrice",
+          "type": 8
+        },
+        {
+          "id": "7:2148038553409372969",
+          "name": "bidPrice",
+          "type": 8
+        },
+        {
+          "id": "8:1423510202094038862",
+          "name": "askPrice",
+          "type": 8
+        },
+        {
+          "id": "9:4619369482897846678",
+          "name": "priceChange",
+          "type": 8
+        },
+        {
+          "id": "10:3027773527055018836",
+          "name": "priceChangePercent",
+          "type": 8
+        },
+        {
+          "id": "11:2260044863163660443",
+          "name": "volume",
+          "type": 8
+        },
+        {
+          "id": "12:4408383742068396147",
+          "name": "quoteVolume",
+          "type": 8
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:7413174995064086404",
+      "lastPropertyId": "3:7988309309959483057",
+      "name": "SearchHistoryEntity",
+      "properties": [
+        {
+          "id": "1:4511157630848874137",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5391002006663341144",
+          "name": "symbol",
+          "indexId": "2:356448650320046573",
+          "type": 9,
+          "flags": 34848
+        },
+        {
+          "id": "3:7988309309959483057",
+          "name": "searchedAt",
+          "type": 10
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:7413174995064086404",
+  "lastIndexId": "2:356448650320046573",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
