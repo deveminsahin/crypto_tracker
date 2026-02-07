@@ -1,60 +1,50 @@
-import 'package:flutter/material.dart';
-
+import 'package:crypto_tracker/core/constants/app_sizes.dart';
 import 'package:crypto_tracker/core/errors/app_exception.dart';
 import 'package:crypto_tracker/core/theme/app_theme.dart';
+import 'package:crypto_tracker/l10n/l10n_extension.dart';
+import 'package:flutter/material.dart';
 
-class ErrorDisplay extends StatelessWidget {
+/// Full-screen error state with a localized message and retry button.
+final class ErrorDisplay extends StatelessWidget {
   final AppException exception;
   final VoidCallback onRetry;
 
   const ErrorDisplay({
-    super.key,
     required this.exception,
     required this.onRetry,
+    super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
+    final l10n = context.l10n;
+    final cryptoColors = CryptoColors.of(context);
+    final bodyMedium = TextTheme.of(context).bodyMedium;
+
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSizes.spacingLg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
-              color: AppTheme.priceDownColor,
-              size: 48,
+              color: cryptoColors.priceDown,
+              size: AppSizes.iconLg,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.spacingMd),
             Text(
-              _userFacingMessage,
+              exception.localizedMessage(l10n),
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppTheme.textSecondary,
-                fontSize: 14,
+              style: bodyMedium?.copyWith(
+                color: ColorScheme.of(context).onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 24),
-            OutlinedButton(
-              onPressed: onRetry,
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppTheme.textPrimary,
-                side: const BorderSide(color: AppTheme.dividerColor),
-              ),
-              child: const Text('Retry'),
-            ),
+            const SizedBox(height: AppSizes.spacingLg),
+            OutlinedButton(onPressed: onRetry, child: Text(l10n.retryButton)),
           ],
         ),
       ),
     );
-  }
-
-  String get _userFacingMessage {
-    return switch (exception) {
-      NetworkException() => 'Unable to connect. Check your internet and try again.',
-      ParseException() => 'Something went wrong processing data. Please try again.',
-      WebSocketException() => 'Live updates disconnected. Please try again.',
-    };
   }
 }
