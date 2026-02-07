@@ -1,75 +1,85 @@
+import 'package:crypto_tracker/core/constants/app_sizes.dart';
+import 'package:crypto_tracker/core/theme/app_theme.dart';
+import 'package:crypto_tracker/l10n/l10n_extension.dart';
+import 'package:crypto_tracker/models/ticker.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crypto_tracker/core/theme/app_theme.dart';
-import 'package:crypto_tracker/models/ticker.dart';
-
-class PriceRangeBar extends StatelessWidget {
+/// Visual bar indicating where the current price sits within the 24-hour
+/// low-high range, using a gradient from red (low) to green (high).
+final class PriceRangeBar extends StatelessWidget {
   final Ticker ticker;
-
-  const PriceRangeBar({super.key, required this.ticker});
 
   static const double _barHeight = 6;
   static const double _indicatorSize = 14;
+  static const double _indicatorPadding = 4;
+  static const double _barBorderRadius = 3;
+  static const double _indicatorBorderWidth = 2;
+  static const double _defaultPosition = 0.5;
+
+  const PriceRangeBar({required this.ticker, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
+    final l10n = context.l10n;
+    final colors = ColorScheme.of(context);
+    final cryptoColors = CryptoColors.of(context);
+    final textTheme = TextTheme.of(context);
     final range = ticker.highPrice.value - ticker.lowPrice.value;
     final position = range > 0
-        ? ((ticker.lastPrice.value - ticker.lowPrice.value) / range)
-            .clamp(0.0, 1.0)
-        : 0.5;
+        ? ((ticker.lastPrice.value - ticker.lowPrice.value) / range).clamp(
+            0.0,
+            1.0,
+          )
+        : _defaultPosition;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: AppSizes.spacingMd),
+      padding: const EdgeInsets.all(AppSizes.spacingMd),
       decoration: BoxDecoration(
-        color: AppTheme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        color: colors.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
       ),
       child: Column(
         children: [
-          const Text(
-            '24h Range',
-            style: TextStyle(
-              color: AppTheme.textSecondary,
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: 16),
+          Text(l10n.label24hRange, style: textTheme.bodySmall),
+          const SizedBox(height: AppSizes.spacingMd),
           LayoutBuilder(
-            builder: (context, constraints) {
+            builder: (final context, final constraints) {
               final barWidth = constraints.maxWidth;
-              final indicatorOffset =
-                  (barWidth - _indicatorSize) * position;
-
+              final indicatorOffset = (barWidth - _indicatorSize) * position;
               return SizedBox(
-                height: _indicatorSize + 4,
+                height: _indicatorSize + _indicatorPadding,
                 child: Stack(
                   alignment: Alignment.centerLeft,
                   children: [
-                    Container(
+                    SizedBox(
                       height: _barHeight,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        gradient: const LinearGradient(
-                          colors: [
-                            AppTheme.priceDownColor,
-                            AppTheme.priceUpColor,
-                          ],
+                      width: barWidth,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(_barBorderRadius),
+                          gradient: LinearGradient(
+                            colors: [
+                              cryptoColors.priceDown,
+                              cryptoColors.priceUp,
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     Positioned(
                       left: indicatorOffset,
-                      child: Container(
+                      child: SizedBox(
                         width: _indicatorSize,
                         height: _indicatorSize,
-                        decoration: BoxDecoration(
-                          color: AppTheme.textPrimary,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppTheme.scaffoldBackground,
-                            width: 2,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: colors.onSurface,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: colors.surface,
+                              width: _indicatorBorderWidth,
+                            ),
                           ),
                         ),
                       ),
@@ -79,24 +89,20 @@ class PriceRangeBar extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSizes.spacingSm),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                ticker.lowPrice.formatted,
-                style: const TextStyle(
-                  color: AppTheme.priceDownColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                ticker.lowPrice.formattedWithSeparators,
+                style: textTheme.labelMedium?.copyWith(
+                  color: cryptoColors.priceDown,
                 ),
               ),
               Text(
-                ticker.highPrice.formatted,
-                style: const TextStyle(
-                  color: AppTheme.priceUpColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                ticker.highPrice.formattedWithSeparators,
+                style: textTheme.labelMedium?.copyWith(
+                  color: cryptoColors.priceUp,
                 ),
               ),
             ],
