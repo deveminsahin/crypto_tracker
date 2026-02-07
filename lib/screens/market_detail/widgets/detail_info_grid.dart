@@ -1,60 +1,60 @@
+import 'package:crypto_tracker/core/constants/app_sizes.dart';
+import 'package:crypto_tracker/l10n/l10n_extension.dart';
+import 'package:crypto_tracker/models/ticker.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crypto_tracker/core/theme/app_theme.dart';
-import 'package:crypto_tracker/models/ticker.dart';
+part 'info_row.dart';
 
-class DetailInfoGrid extends StatelessWidget {
+/// Card displaying key ticker statistics (high, low, volume, bid, ask).
+final class DetailInfoGrid extends StatelessWidget {
   final Ticker ticker;
 
-  const DetailInfoGrid({super.key, required this.ticker});
+  const DetailInfoGrid({required this.ticker, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
+    final l10n = context.l10n;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: AppSizes.spacingMd),
+      padding: const EdgeInsets.all(AppSizes.spacingMd),
       decoration: BoxDecoration(
-        color: AppTheme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
+        color: ColorScheme.of(context).surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
       ),
       child: Column(
         children: [
-          _buildRow('24h High', ticker.highPrice.formatted),
-          const Divider(height: 24),
-          _buildRow('24h Low', ticker.lowPrice.formatted),
-          const Divider(height: 24),
-          _buildRow('24h Volume', ticker.volume.formatted),
-          const Divider(height: 24),
-          _buildRow('Quote Volume', ticker.quoteVolume.formatted),
-          const Divider(height: 24),
-          _buildRow('Bid Price', ticker.bidPrice.formatted),
-          const Divider(height: 24),
-          _buildRow('Ask Price', ticker.askPrice.formatted),
+          _InfoRow(
+            label: l10n.label24hHigh,
+            value: ticker.highPrice.formattedWithSeparators,
+          ),
+          const Divider(height: AppSizes.spacingLg),
+          _InfoRow(
+            label: l10n.label24hLow,
+            value: ticker.lowPrice.formattedWithSeparators,
+          ),
+          const Divider(height: AppSizes.spacingLg),
+          _InfoRow(
+            label: l10n.label24hVolume,
+            value: ticker.volume.formattedWithSeparators,
+          ),
+          const Divider(height: AppSizes.spacingLg),
+          _InfoRow(
+            label: l10n.labelQuoteVolume,
+            value: ticker.quoteVolume.formattedWithSeparators,
+          ),
+          const Divider(height: AppSizes.spacingLg),
+          _InfoRow(
+            label: l10n.labelBidPrice,
+            value: ticker.bidPrice.formattedWithSeparators,
+          ),
+          const Divider(height: AppSizes.spacingLg),
+          _InfoRow(
+            label: l10n.labelAskPrice,
+            value: ticker.askPrice.formattedWithSeparators,
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: AppTheme.textSecondary,
-            fontSize: 13,
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            color: AppTheme.textPrimary,
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
     );
   }
 }

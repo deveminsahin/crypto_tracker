@@ -1,26 +1,35 @@
+import 'package:crypto_tracker/core/constants/app_sizes.dart';
+import 'package:crypto_tracker/l10n/l10n_extension.dart';
 import 'package:flutter/material.dart';
 
-import 'package:crypto_tracker/core/theme/app_theme.dart';
-
-class MarketSearchField extends StatelessWidget {
+/// Search text field for filtering tickers by symbol name.
+final class MarketSearchField extends StatelessWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
 
   const MarketSearchField({
-    super.key,
     required this.controller,
     required this.onChanged,
+    super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      onChanged: onChanged,
-      style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14),
-      decoration: const InputDecoration(
-        hintText: 'Search symbol...',
-        prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary),
+  Widget build(final BuildContext context) {
+    final l10n = context.l10n;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSizes.spacingSm),
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        style: TextTheme.of(context).bodyMedium,
+        decoration: InputDecoration(
+          hintText: l10n.searchHint,
+          prefixIcon: Icon(
+            Icons.search,
+            color: ColorScheme.of(context).onSurfaceVariant,
+          ),
+        ),
       ),
     );
   }

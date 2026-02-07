@@ -1,52 +1,74 @@
+import 'package:crypto_tracker/core/constants/app_opacity.dart';
+import 'package:crypto_tracker/core/constants/app_sizes.dart';
+import 'package:crypto_tracker/core/theme/app_theme.dart';
+import 'package:crypto_tracker/l10n/l10n_extension.dart';
+import 'package:crypto_tracker/models/market_category.dart';
+import 'package:crypto_tracker/providers/market_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:crypto_tracker/core/theme/app_theme.dart';
-import 'package:crypto_tracker/models/market_category.dart';
-import 'package:crypto_tracker/providers/market_provider.dart';
-
-class CategoryTabBar extends StatelessWidget {
+/// Horizontal row of selectable quote-asset category chips (All, USDT, BTC, ...).
+final class CategoryTabBar extends StatelessWidget {
   const CategoryTabBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
+    final l10n = context.l10n;
     final selected = context.select<MarketProvider, MarketCategory>(
-      (provider) => provider.selectedCategory,
+      (final provider) => provider.selectedCategory,
     );
+    final colors = ColorScheme.of(context);
+    final cryptoColors = CryptoColors.of(context);
+    final textTheme = TextTheme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSizes.spacingSm),
       child: Row(
-        children: MarketCategory.values.map((category) {
-          final isSelected = category == selected;
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: GestureDetector(
-              onTap: () => context.read<MarketProvider>().setCategory(category),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppTheme.priceUpColor.withValues(alpha: 0.15)
-                      : AppTheme.cardBackground,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  category.label,
-                  style: TextStyle(
-                    color: isSelected
-                        ? AppTheme.priceUpColor
-                        : AppTheme.textSecondary,
-                    fontSize: 13,
-                    fontWeight:
-                        isSelected ? FontWeight.w600 : FontWeight.w400,
+        children: MarketCategory.values
+            .map((final category) {
+              final (background, foreground, fontWeight) =
+                  category == selected
+                      ? (
+                          cryptoColors.priceUp.withValues(
+                            alpha: AppOpacity.selectedChip,
+                          ),
+                          cryptoColors.priceUp,
+                          FontWeight.w600,
+                        )
+                      : (
+                          colors.surfaceContainerHighest,
+                          colors.onSurfaceVariant,
+                          FontWeight.w400,
+                        );
+
+              return Padding(
+                padding: const EdgeInsets.only(right: AppSizes.spacingSm),
+                child: GestureDetector(
+                  onTap: () =>
+                      context.read<MarketProvider>().setCategory(category),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSizes.spacingMd,
+                      vertical: AppSizes.spacingSm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: background,
+                      borderRadius: BorderRadius.circular(
+                        AppSizes.borderRadiusMd,
+                      ),
+                    ),
+                    child: Text(
+                      category.label(l10n),
+                      style: textTheme.labelMedium?.copyWith(
+                        color: foreground,
+                        fontWeight: fontWeight,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }).toList(growable: false),
+              );
+            })
+            .toList(growable: false),
       ),
     );
   }
