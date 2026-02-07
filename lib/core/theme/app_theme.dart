@@ -12,6 +12,9 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
   /// Colour for negative price movement.
   final Color priceDown;
 
+  /// Colour for neutral/unchanged price movement (0.0%).
+  final Color priceNeutral;
+
   /// Warning / caution accent colour.
   final Color warning;
 
@@ -27,6 +30,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
   const CryptoColors({
     required this.priceUp,
     required this.priceDown,
+    required this.priceNeutral,
     required this.warning,
     required this.onPriceBadge,
     required this.shimmerBase,
@@ -42,6 +46,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
   CryptoColors copyWith({
     final Color? priceUp,
     final Color? priceDown,
+    final Color? priceNeutral,
     final Color? warning,
     final Color? onPriceBadge,
     final Color? shimmerBase,
@@ -49,6 +54,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
   }) => CryptoColors(
     priceUp: priceUp ?? this.priceUp,
     priceDown: priceDown ?? this.priceDown,
+    priceNeutral: priceNeutral ?? this.priceNeutral,
     warning: warning ?? this.warning,
     onPriceBadge: onPriceBadge ?? this.onPriceBadge,
     shimmerBase: shimmerBase ?? this.shimmerBase,
@@ -61,6 +67,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
     return CryptoColors(
       priceUp: Color.lerp(priceUp, other.priceUp, t)!,
       priceDown: Color.lerp(priceDown, other.priceDown, t)!,
+      priceNeutral: Color.lerp(priceNeutral, other.priceNeutral, t)!,
       warning: Color.lerp(warning, other.warning, t)!,
       onPriceBadge: Color.lerp(onPriceBadge, other.onPriceBadge, t)!,
       shimmerBase: Color.lerp(shimmerBase, other.shimmerBase, t)!,
@@ -82,6 +89,7 @@ abstract final class AppTheme {
   static const Color _cardBackground = Color(0xFF1E2329);
   static const Color _priceUp = Color(0xFF0ECB81);
   static const Color _priceDown = Color(0xFFF6465D);
+  static const Color _priceNeutral = Color(0xFF848E9C);
   static const Color _warning = Color(0xFFFCD535);
   static const Color _textPrimary = Color(0xFFEAECEF);
   static const Color _textSecondary = Color(0xFF848E9C);
@@ -105,6 +113,7 @@ abstract final class AppTheme {
       CryptoColors(
         priceUp: _priceUp,
         priceDown: _priceDown,
+        priceNeutral: _priceNeutral,
         warning: _warning,
         onPriceBadge: _white,
         shimmerBase: _shimmerBase,

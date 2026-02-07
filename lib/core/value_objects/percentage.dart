@@ -54,9 +54,13 @@ final class Percentage {
 
   /// Returns the appropriate color for this percentage change.
   ///
-  /// Positive values return [CryptoColors.priceUp], otherwise [CryptoColors.priceDown].
-  Color colorFrom(final CryptoColors colors) =>
-      isPositive ? colors.priceUp : colors.priceDown;
+  /// Positive values return [CryptoColors.priceUp], negative values return
+  /// [CryptoColors.priceDown], and zero returns [CryptoColors.priceNeutral].
+  Color colorFrom(final CryptoColors colors) {
+    if (isPositive) return colors.priceUp;
+    if (isNegative) return colors.priceDown;
+    return colors.priceNeutral;
+  }
 
   @override
   bool operator ==(final Object other) =>
