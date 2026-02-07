@@ -1,0 +1,155 @@
+{
+  "@@locale": "en",
+  "appName": "Crypto Tracker",
+  "@appName": {
+    "description": "Name of the app"
+  },
+  "marketsTitle": "Markets",
+  "@marketsTitle": {
+    "description": "Title for the market list screen"
+  },
+  "searchHint": "Search symbol...",
+  "@searchHint": {
+    "description": "Hint text for the search field"
+  },
+  "noPairsFound": "No pairs found",
+  "@noPairsFound": {
+    "description": "Message when no trading pairs match the filter"
+  },
+  "tickerNotFound": "Ticker not found",
+  "@tickerNotFound": {
+    "description": "Message when ticker is not found in detail view"
+  },
+  "volumePrefix": "Vol ",
+  "@volumePrefix": {
+    "description": "Prefix for volume display"
+  },
+  "retryButton": "Retry",
+  "@retryButton": {
+    "description": "Label for retry button"
+  },
+  "errorNetwork": "Unable to connect. Check your internet and try again.",
+  "@errorNetwork": {
+    "description": "Network error message"
+  },
+  "errorParsing": "Something went wrong processing data. Please try again.",
+  "@errorParsing": {
+    "description": "Data parsing error message"
+  },
+  "errorWebSocket": "Live updates disconnected. Please try again.",
+  "@errorWebSocket": {
+    "description": "WebSocket error message"
+  },
+  "errorCache": "Unable to load cached data. Please try again.",
+  "@errorCache": {
+    "description": "Cache error message"
+  },
+  "wsConnected": "Live updates active",
+  "@wsConnected": {
+    "description": "WebSocket connected tooltip"
+  },
+  "wsConnecting": "Connecting...",
+  "@wsConnecting": {
+    "description": "WebSocket connecting tooltip"
+  },
+  "wsDisconnected": "Live updates paused",
+  "@wsDisconnected": {
+    "description": "WebSocket disconnected tooltip"
+  },
+  "wsError": "Connection error",
+  "@wsError": {
+    "description": "WebSocket error tooltip"
+  },
+  "wsLabelLive": "Live",
+  "@wsLabelLive": {
+    "description": "WebSocket connected label"
+  },
+  "wsLabelSyncing": "Syncing",
+  "@wsLabelSyncing": {
+    "description": "WebSocket connecting label"
+  },
+  "wsLabelStale": "Stale",
+  "@wsLabelStale": {
+    "description": "WebSocket disconnected/error label"
+  },
+  "label24hHigh": "24h High",
+  "@label24hHigh": {
+    "description": "Label for 24-hour high price"
+  },
+  "label24hLow": "24h Low",
+  "@label24hLow": {
+    "description": "Label for 24-hour low price"
+  },
+  "label24hVolume": "24h Volume",
+  "@label24hVolume": {
+    "description": "Label for 24-hour volume"
+  },
+  "labelQuoteVolume": "Quote Volume",
+  "@labelQuoteVolume": {
+    "description": "Label for quote volume"
+  },
+  "labelBidPrice": "Bid Price",
+  "@labelBidPrice": {
+    "description": "Label for bid price"
+  },
+  "labelAskPrice": "Ask Price",
+  "@labelAskPrice": {
+    "description": "Label for ask price"
+  },
+  "label24hChange": "24h Change",
+  "@label24hChange": {
+    "description": "Label for 24-hour price change"
+  },
+  "label24hRange": "24h Range",
+  "@label24hRange": {
+    "description": "Label for 24-hour price range"
+  },
+  "categoryAll": "All",
+  "@categoryAll": {
+    "description": "All category filter label"
+  },
+  "categoryUsdt": "USDT",
+  "@categoryUsdt": {
+    "description": "USDT category filter label"
+  },
+  "categoryBtc": "BTC",
+  "@categoryBtc": {
+    "description": "BTC category filter label"
+  },
+  "categoryEth": "ETH",
+  "@categoryEth": {
+    "description": "ETH category filter label"
+  },
+  "categoryBnb": "BNB",
+  "@categoryBnb": {
+    "description": "BNB category filter label"
+  },
+  "sortSymbol": "Symbol",
+  "@sortSymbol": {
+    "description": "Sort by symbol option"
+  },
+  "sortPrice": "Price",
+  "@sortPrice": {
+    "description": "Sort by price option"
+  },
+  "sortChange": "Change %",
+  "@sortChange": {
+    "description": "Sort by change percentage option"
+  },
+  "sortVolume": "Volume",
+  "@sortVolume": {
+    "description": "Sort by volume option"
+  },
+  "emptyStateHint": "Try a different search term or category",
+  "@emptyStateHint": {
+    "description": "Hint text shown in empty state view"
+  },
+  "scrollToTop": "Scroll to top",
+  "@scrollToTop": {
+    "description": "Tooltip for scroll to top button"
+  },
+  "recentSearches": "Recent",
+  "@recentSearches": {
+    "description": "Label for recent search history section"
+  }
+}
