@@ -1,81 +1,92 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
+import 'package:crypto_tracker/core/constants/app_constants.dart';
+import 'package:crypto_tracker/core/constants/app_opacity.dart';
+import 'package:crypto_tracker/core/constants/app_sizes.dart';
 import 'package:crypto_tracker/core/theme/app_theme.dart';
 import 'package:crypto_tracker/models/ticker.dart';
+import 'package:crypto_tracker/providers/search_history_provider.dart';
+import 'package:crypto_tracker/router/app_router.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-class TickerRow extends StatelessWidget {
+part 'ticker_row_mixin.dart';
+
+/// A single ticker row in the market list with a price-flash animation.
+///
+/// Flashes green/red when the price changes, using a fade-out animation.
+/// Animation lifecycle lives in [_TickerRowAnimationMixin].
+final class TickerRow extends StatefulWidget {
   final Ticker ticker;
 
-  const TickerRow({super.key, required this.ticker});
+  const TickerRow({required this.ticker, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final isPositive = ticker.priceChangePercent.isPositive;
-    final changeColor =
-        isPositive ? AppTheme.priceUpColor : AppTheme.priceDownColor;
+  State<TickerRow> createState() => _TickerRowState();
+}
 
-    return InkWell(
-      onTap: () => context.go('/detail/${ticker.symbol}'),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+class _TickerRowState extends State<TickerRow>
+    with SingleTickerProviderStateMixin, _TickerRowAnimationMixin {
+  static const double _badgePaddingVertical = 6;
+
+  void _onTap() {
+    context.read<SearchHistoryProvider>().addSearch(widget.ticker.symbol);
+    context.push(AppRoutes.detailPath(widget.ticker.symbol));
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    final ticker = widget.ticker;
+    final textTheme = TextTheme.of(context);
+    final cryptoColors = CryptoColors.of(context);
+    final changeColor = ticker.priceChangePercent.colorFrom(cryptoColors);
+
+    return AnimatedBuilder(
+      animation: flashAnimation,
+      builder: (final context, final child) =>
+          Container(color: flashColor(cryptoColors), child: child),
+      child: InkWell(
+        onTap: _onTap,
         child: Row(
           children: [
             Expanded(
               flex: 3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    ticker.symbol,
-                    style: const TextStyle(
-                      color: AppTheme.textPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Vol ${ticker.volume.formatted}',
-                    style: const TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
+              child: Text(
+                ticker.symbol,
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             Expanded(
               flex: 3,
               child: Text(
-                ticker.lastPrice.formatted,
+                ticker.lastPrice.formattedWithSeparators,
                 textAlign: TextAlign.right,
-                style: TextStyle(
+                style: textTheme.bodyMedium?.copyWith(
                   color: changeColor,
-                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSizes.priceColumnGap),
             SizedBox(
-              width: 80,
+              width: AppSizes.badgeColumnWidth,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 6,
+                  horizontal: AppSizes.spacingSm,
+                  vertical: _badgePaddingVertical,
                 ),
                 decoration: BoxDecoration(
                   color: changeColor,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(
+                    AppSizes.borderRadiusSm,
+                  ),
                 ),
                 child: Text(
                   ticker.priceChangePercent.formatted,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: cryptoColors.onPriceBadge,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
