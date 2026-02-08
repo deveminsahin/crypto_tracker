@@ -1,3 +1,4 @@
+import 'package:crypto_tracker/core/value_objects/numeric_value.dart';
 import 'package:flutter/foundation.dart';
 
 /// Immutable value object representing a monetary price in USD (or quote asset).
@@ -5,8 +6,9 @@ import 'package:flutter/foundation.dart';
 /// Prices below [_compactThreshold] (e.g. micro-cap tokens) are displayed with
 /// 8 decimal places; all others use 2 decimal places.
 @immutable
-final class Price {
+final class Price extends NumericValue {
   /// The raw numeric price value.
+  @override
   final double value;
 
   static const double _compactThreshold = 1;
@@ -40,26 +42,13 @@ final class Price {
   /// Human-readable price with comma separators (e.g., 1,169,843.52).
   String get formattedWithSeparators {
     final intPart = value.truncate();
-    final formatted = _addThousandSeparators(intPart);
-    final decimals = value < _compactThreshold
+    final formatted = formatWithThousandSeparators(intPart);
+    final decimals = value.abs() < _compactThreshold
         ? _highPrecisionDecimals
         : _standardDecimals;
     final decimalStr = (value - intPart).abs().toStringAsFixed(decimals);
-    return '$formatted${decimalStr.substring(1)}';
-  }
-
-  static String _addThousandSeparators(final int number) {
-    final str = number.abs().toString();
-    final buffer = StringBuffer();
-    final length = str.length;
-    for (var i = 0; i < length; i++) {
-      if (i > 0 && (length - i) % 3 == 0) {
-        buffer.write(',');
-      }
-      buffer.write(str[i]);
-    }
-    final result = buffer.toString();
-    return number.isNegative ? '-$result' : result;
+    final prefix = value.isNegative && intPart == 0 ? '-' : '';
+    return '$prefix$formatted${decimalStr.substring(1)}';
   }
 
   /// Adds two prices.

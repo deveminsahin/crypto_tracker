@@ -32,9 +32,11 @@ Foundation layer containing constants, dependency injection, error handling, res
 ### `logging/`
 
 - `app_logger.dart` - Structured logging with debug/info/warning/error levels; silent in release.
+- `logger.dart` - Abstract `Logger` interface and `LogLevel` enum for dependency injection.
 
 ### `value_objects/`
 
+- `numeric_value.dart` - Abstract `NumericValue` base class providing shared formatting utilities.
 - `percentage.dart` - Immutable percentage with formatting (`+2.45%`).
 - `price.dart` - Immutable price with adaptive decimal precision and comma-separated formatting.
 - `volume.dart` - Immutable volume with K/M/B suffix or comma-separated formatting.

@@ -1,3 +1,4 @@
+import 'package:crypto_tracker/core/value_objects/numeric_value.dart';
 import 'package:flutter/foundation.dart';
 
 /// Immutable value object representing a trading volume in the quote asset.
@@ -7,8 +8,9 @@ import 'package:flutter/foundation.dart';
 ///
 /// Implements [Comparable] to support sorting by volume.
 @immutable
-final class Volume implements Comparable<Volume> {
+final class Volume extends NumericValue implements Comparable<Volume> {
   /// The raw numeric volume.
+  @override
   final double value;
 
   static const double _billionThreshold = 1000000000;
@@ -48,25 +50,11 @@ final class Volume implements Comparable<Volume> {
   String get formattedWithSeparators {
     final intPart = value.truncate();
     final decimalPart = value - intPart;
-    final formatted = _addThousandSeparators(intPart);
+    final formatted = formatWithThousandSeparators(intPart);
     if (decimalPart == 0) {
       return formatted;
     }
     return '$formatted${decimalPart.toStringAsFixed(2).substring(1)}';
-  }
-
-  static String _addThousandSeparators(final int number) {
-    final str = number.abs().toString();
-    final buffer = StringBuffer();
-    final length = str.length;
-    for (var i = 0; i < length; i++) {
-      if (i > 0 && (length - i) % 3 == 0) {
-        buffer.write(',');
-      }
-      buffer.write(str[i]);
-    }
-    final result = buffer.toString();
-    return number.isNegative ? '-$result' : result;
   }
 
   @override
