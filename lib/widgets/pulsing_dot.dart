@@ -3,8 +3,13 @@ part of 'ws_connection_indicator.dart';
 final class _PulsingDot extends StatefulWidget {
   final Color color;
   final double size;
+  final bool animate;
 
-  const _PulsingDot({required this.color, required this.size});
+  const _PulsingDot({
+    required this.color,
+    required this.size,
+    this.animate = true,
+  });
 
   @override
   State<_PulsingDot> createState() => _PulsingDotState();
@@ -21,12 +26,30 @@ class _PulsingDotState extends State<_PulsingDot>
     _controller = AnimationController(
       duration: AppConstants.shimmerAnimationDuration,
       vsync: this,
-    )..repeat(reverse: true);
+    );
 
     _animation = Tween<double>(
       begin: 0.4,
       end: 1,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    if (widget.animate) {
+      _controller.repeat(reverse: true);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant final _PulsingDot oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.animate != oldWidget.animate) {
+      if (widget.animate) {
+        _controller.repeat(reverse: true);
+      } else {
+        _controller
+          ..stop()
+          ..value = 1.0;
+      }
+    }
   }
 
   @override

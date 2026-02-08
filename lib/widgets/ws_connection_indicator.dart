@@ -53,7 +53,11 @@ final class WsConnectionIndicator extends StatelessWidget {
             SizedBox(
               width: AppSizes.spacingSm,
               height: AppSizes.spacingSm,
-              child: _PulsingDot(color: color, size: AppSizes.spacingSm),
+              child: _PulsingDot(
+                color: color,
+                size: AppSizes.spacingSm,
+                animate: state.shouldAnimate,
+              ),
             ),
             const SizedBox(width: AppSizes.spacingXs),
             Text(
