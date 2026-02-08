@@ -2,6 +2,7 @@ import 'package:crypto_tracker/core/logging/logger.dart';
 import 'package:crypto_tracker/router/app_navigation_observer.dart';
 import 'package:crypto_tracker/screens/market_detail/market_detail_screen.dart';
 import 'package:crypto_tracker/screens/market_list/market_list_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 /// Centralised route path constants and helper methods.
@@ -11,8 +12,16 @@ abstract final class AppRoutes {
   static const _symbolParam = 'symbol';
 
   static String detailPath(final String symbol) => '/detail/$symbol';
-  static String symbolFrom(final GoRouterState state) =>
-      state.pathParameters[_symbolParam] ?? '';
+  static String symbolFrom(final GoRouterState state) {
+    final symbol = state.pathParameters[_symbolParam];
+    if (symbol == null || symbol.isEmpty) {
+      if (kDebugMode) {
+        debugPrint('AppRoutes: Missing or empty symbol path parameter');
+      }
+      return '';
+    }
+    return symbol;
+  }
 }
 
 /// Creates the application [GoRouter] with market-list and detail routes.

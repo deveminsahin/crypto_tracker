@@ -28,6 +28,15 @@ sealed class Result<T> {
     Failure(:final exception) => Failure(exception),
   };
 
+  /// Chains a [Result]-returning operation on the [Success] value,
+  /// passing [Failure] through unchanged.
+  Future<Result<R>> flatMap<R>(
+    final Future<Result<R>> Function(T data) transform,
+  ) => switch (this) {
+    Success(:final data) => transform(data),
+    Failure(:final exception) => Future.value(Failure(exception)),
+  };
+
   /// Collapses both cases into a single return value of type [R].
   R when<R>({
     required final R Function(T data) success,
