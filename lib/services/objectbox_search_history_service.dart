@@ -20,11 +20,11 @@ final class ObjectBoxSearchHistoryService implements SearchHistoryService {
       final query = _box
           .query()
           .order(SearchHistoryEntity_.searchedAt, flags: Order.descending)
-          .build();
+          .build()
+        ..limit = limit;
 
       final results = query
           .find()
-          .take(limit)
           .map((final e) => e.symbol)
           .toList();
       query.close();

@@ -85,10 +85,11 @@ final class BackgroundIsolateParser implements IsolateParser {
       return const Failure(ParseException('WS isolate not initialized'));
     }
 
+    final id = _nextRequestId++;
+    final completer = Completer<dynamic>();
+    _pendingRequests[id] = completer;
+
     try {
-      final id = _nextRequestId++;
-      final completer = Completer<dynamic>();
-      _pendingRequests[id] = completer;
       _wsSendPort!.send([id, rawJson]);
 
       final result = await completer.future.timeout(_parseTimeout);
@@ -106,8 +107,10 @@ final class BackgroundIsolateParser implements IsolateParser {
         ParseException('Unexpected parse result from isolate'),
       );
     } on TimeoutException {
+      _pendingRequests.remove(id);
       return const Failure(ParseException('WS parse timed out'));
     } on Exception catch (e) {
+      _pendingRequests.remove(id);
       return Failure(ParseException('Failed to parse WS tickers: $e'));
     }
   }

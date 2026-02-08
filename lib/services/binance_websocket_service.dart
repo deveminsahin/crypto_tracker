@@ -18,7 +18,8 @@ final class BinanceWebSocketService implements WebSocketService {
 
   WebSocketChannel? _channel;
   StreamSubscription<dynamic>? _channelSubscription;
-  StreamController<String>? _controller;
+  final StreamController<String> _controller =
+      StreamController<String>.broadcast();
   final StreamController<WsState> _stateController =
       StreamController<WsState>.broadcast();
   Timer? _reconnectTimer;
@@ -33,10 +34,7 @@ final class BinanceWebSocketService implements WebSocketService {
        _logger = logger;
 
   @override
-  Stream<String> get messages {
-    _controller ??= StreamController<String>.broadcast();
-    return _controller!.stream;
-  }
+  Stream<String> get messages => _controller.stream;
 
   @override
   Stream<WsState> get connectionState => _stateController.stream;
@@ -70,7 +68,7 @@ final class BinanceWebSocketService implements WebSocketService {
       _channelSubscription = _channel!.stream.listen(
         (final data) {
           if (!_isDisposed && data is String) {
-            _controller?.add(data);
+            _controller.add(data);
           }
         },
         onError: (final Object error) {
@@ -154,9 +152,8 @@ final class BinanceWebSocketService implements WebSocketService {
     _channelSubscription?.cancel();
     _channelSubscription = null;
     _channel?.sink.close();
-    _controller?.close();
+    _controller.close();
     _stateController.close();
     _channel = null;
-    _controller = null;
   }
 }

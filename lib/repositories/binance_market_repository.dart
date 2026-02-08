@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:crypto_tracker/core/constants/app_constants.dart';
+import 'package:crypto_tracker/core/logging/logger.dart';
 import 'package:crypto_tracker/core/result/result.dart';
 import 'package:crypto_tracker/models/ticker.dart';
 import 'package:crypto_tracker/repositories/market_repository.dart';
@@ -16,10 +17,13 @@ import 'package:crypto_tracker/storage/local_storage.dart';
 /// 2. WebSocket streaming via [WebSocketService] with throttled UI updates.
 /// 3. ObjectBox caching via [LocalStorage] for offline resilience.
 final class BinanceMarketRepository implements MarketRepository {
+  static const _tag = 'MarketRepository';
+
   final ApiService _apiService;
   final WebSocketService _webSocketService;
   final IsolateParser _isolateParser;
   final LocalStorage<Ticker> _storage;
+  final Logger _logger;
 
   final Map<String, Ticker> _tickerCache = {};
 
@@ -38,10 +42,12 @@ final class BinanceMarketRepository implements MarketRepository {
     required final WebSocketService webSocketService,
     required final IsolateParser isolateParser,
     required final LocalStorage<Ticker> storage,
+    required final Logger logger,
   }) : _apiService = apiService,
        _webSocketService = webSocketService,
        _isolateParser = isolateParser,
-       _storage = storage;
+       _storage = storage,
+       _logger = logger;
 
   @override
   Stream<void> get onTickersUpdated => _tickersUpdatedController.stream;
@@ -87,7 +93,7 @@ final class BinanceMarketRepository implements MarketRepository {
               }
               return Success(cachedTickers);
             }
-          } on Object {
+          } on Exception {
             // Storage also failed — return original network error
           }
         }
@@ -155,7 +161,9 @@ final class BinanceMarketRepository implements MarketRepository {
           _tickersUpdatedController.add(null);
         }
       },
-      failure: (final _) {},
+      failure: (final e) {
+        _logger.warning(_tag, 'Failed to parse WS mini-tickers: ${e.message}');
+      },
     );
   }
 
@@ -177,11 +185,8 @@ final class BinanceMarketRepository implements MarketRepository {
     _cachePersistenceTimer?.cancel();
     _wsFlushTimer?.cancel();
     _wsSubscription?.cancel();
-    _webSocketService.dispose();
-    _isolateParser.dispose();
-    _apiService.dispose();
     _tickersUpdatedController.close();
     _tickerCache.clear();
-    unawaited(_storage.close());
+    // Injected services are singletons managed by GetIt — do not dispose here.
   }
 }
