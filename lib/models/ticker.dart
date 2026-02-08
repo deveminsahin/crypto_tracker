@@ -10,9 +10,9 @@ import 'package:flutter/foundation.dart';
 /// continuously updated via [mergeWithMiniTicker] with real-time
 /// WebSocket data.
 ///
-/// Equality is based on [symbol] and [lastPrice] only, enabling
-/// efficient UI diffing (the widget tree only rebuilds when the
-/// price actually changes).
+/// Equality compares all fields so that [Selector]-based listeners
+/// rebuild when any datum changes, while skipping unnecessary rebuilds
+/// when a WebSocket batch arrives but this particular ticker is unchanged.
 @immutable
 final class Ticker {
   /// Trading pair symbol (e.g. `BTCUSDT`).
@@ -108,8 +108,31 @@ final class Ticker {
   @override
   bool operator ==(final Object other) =>
       identical(this, other) ||
-      other is Ticker && symbol == other.symbol && lastPrice == other.lastPrice;
+      other is Ticker &&
+          symbol == other.symbol &&
+          lastPrice == other.lastPrice &&
+          openPrice == other.openPrice &&
+          highPrice == other.highPrice &&
+          lowPrice == other.lowPrice &&
+          bidPrice == other.bidPrice &&
+          askPrice == other.askPrice &&
+          priceChange == other.priceChange &&
+          priceChangePercent == other.priceChangePercent &&
+          volume == other.volume &&
+          quoteVolume == other.quoteVolume;
 
   @override
-  int get hashCode => Object.hash(symbol, lastPrice);
+  int get hashCode => Object.hash(
+    symbol,
+    lastPrice,
+    openPrice,
+    highPrice,
+    lowPrice,
+    bidPrice,
+    askPrice,
+    priceChange,
+    priceChangePercent,
+    volume,
+    quoteVolume,
+  );
 }

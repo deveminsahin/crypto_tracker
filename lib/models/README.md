@@ -29,7 +29,7 @@ if (MarketCategory.usdt.matches(ticker.symbol)) { ... }
 
 ## Architecture Notes
 
-- `Ticker` equality is based on `symbol` + `lastPrice` only, enabling efficient UI diffing.
+- `Ticker` equality compares all fields so that `Selector`-based listeners rebuild when any datum changes, while skipping unnecessary rebuilds when a WebSocket batch arrives but the specific ticker is unchanged.
 - `MiniTicker` is a transient DTO; it does not need `==`/`hashCode`.
 - All models are `@immutable` with `const` constructors.
 
