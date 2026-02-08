@@ -12,7 +12,15 @@ import 'package:crypto_tracker/services/websocket_service.dart';
 import 'package:flutter/foundation.dart';
 
 /// WebSocket connection state for UI feedback.
-enum WsConnectionState { disconnected, connecting, connected, error }
+enum WsConnectionState {
+  disconnected,
+  connecting,
+  connected,
+  error;
+
+  /// Whether this state represents an active connection attempt.
+  bool get shouldAnimate => this == connected || this == connecting;
+}
 
 /// Sorting options for ticker list.
 enum SortOption { symbol, price, changePercent, volume }
@@ -305,17 +313,23 @@ final class MarketProvider extends ChangeNotifier {
 
   /// Checks initial connectivity and subscribes to changes.
   void _monitorConnectivity() {
-    _connectivityService.isConnected.then((final connected) {
+    unawaited(_checkInitialConnectivity());
+    _connectivitySubscription = _connectivityService.onConnectivityChanged
+        .listen(_handleConnectivityChange);
+  }
+
+  Future<void> _checkInitialConnectivity() async {
+    try {
+      final connected = await _connectivityService.isConnected;
       if (_isDisposed) return;
       _hasNetwork = connected;
       if (!connected) {
         _wsState = WsConnectionState.disconnected;
         _notify();
       }
-    });
-
-    _connectivitySubscription = _connectivityService.onConnectivityChanged
-        .listen(_handleConnectivityChange);
+    } on Exception catch (e) {
+      _logger.error(_tag, 'Failed to check initial connectivity', e);
+    }
   }
 
   /// Reacts to network connectivity changes.
@@ -392,7 +406,9 @@ final class MarketProvider extends ChangeNotifier {
     _tickersSubscription?.cancel();
     _connectivitySubscription?.cancel();
     _wsStateSubscription?.cancel();
-    _repository.dispose();
+    // Do not dispose the repository — it is a singleton managed by GetIt.
+    // Only disconnect the WebSocket session this provider started.
+    unawaited(_repository.disconnectWebSocket());
     super.dispose();
   }
 }
