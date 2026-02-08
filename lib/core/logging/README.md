@@ -6,7 +6,8 @@ Provides a centralized, structured logging service for the application.
 
 ## Contents
 
-- `app_logger.dart` — `AppLogger` singleton with level-based logging
+- `app_logger.dart` — `AppLogger` implementation with level-based logging
+- `logger.dart` — Abstract `Logger` interface for dependency injection
 
 ## Log Levels
 
@@ -22,14 +23,15 @@ Provides a centralized, structured logging service for the application.
 ```dart
 import 'package:crypto_tracker/core/logging/app_logger.dart';
 
-AppLogger.info('API', 'Fetching tickers');
-AppLogger.error('API', 'Request failed', error, stackTrace);
+final logger = AppLogger();
+logger.info('API', 'Fetching tickers');
+logger.error('API', 'Request failed', error, stackTrace);
 ```
 
 ## Behavior
 
 - **Debug mode:** Logs to console via `dart:developer`
-- **Release mode:** Silent unless `AppLogger.logHandler` is set
+- **Release mode:** Silent unless `logHandler` is set on the `AppLogger` instance
 
 ## Security
 
