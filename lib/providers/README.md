@@ -7,14 +7,14 @@ State management layer using `ChangeNotifier` with the `provider` package.
 ## Contents
 
 - `market_provider.dart` - `MarketProvider` managing ticker data, filtering, sorting, WebSocket state, and connectivity.
-- `search_history_provider.dart` - `SearchHistoryProvider` managing recent search history with ObjectBox persistence.
+- `search_history_provider.dart` - `SearchHistoryProvider` managing recent search history via `SearchHistoryService`.
 
 ## Dependencies
 
 - `provider` - ChangeNotifier-based state management
 - `repositories/` - data access via `MarketRepository`
 - `services/` - `ConnectivityService` for network awareness
-- `storage/` - ObjectBox for search history persistence
+- `services/` - `SearchHistoryService` for search history persistence
 
 ## Usage
 

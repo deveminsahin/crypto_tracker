@@ -48,7 +48,9 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<SearchHistoryService>(
       ObjectBoxSearchHistoryService(store),
     )
-    ..registerSingleton<SearchHistoryProvider>(SearchHistoryProvider(store))
+    ..registerSingleton<SearchHistoryProvider>(
+      SearchHistoryProvider(sl<SearchHistoryService>()),
+    )
     // Services
     ..registerLazySingleton<ApiService>(
       () => BinanceApiService(client: sl(), logger: sl()),
