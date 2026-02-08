@@ -12,7 +12,7 @@ abstract final class AppRoutes {
 
   static String detailPath(final String symbol) => '/detail/$symbol';
   static String symbolFrom(final GoRouterState state) =>
-      state.pathParameters[_symbolParam]!;
+      state.pathParameters[_symbolParam] ?? '';
 }
 
 /// Creates the application [GoRouter] with market-list and detail routes.
