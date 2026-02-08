@@ -9,6 +9,7 @@ Internationalisation resources and generated localization delegates.
 - `app_en.arb` - English string catalogue (source of truth).
 - `app_localizations.dart` - Generated base localisation class and delegate.
 - `app_localizations_en.dart` - Generated English implementation.
+- `l10n_extension.dart` - `AppLocalizationsX` extension providing `context.l10n` convenience getter.
 
 ## Dependencies
 
@@ -20,7 +21,11 @@ Internationalisation resources and generated localization delegates.
 Access strings in widgets via:
 
 ```dart
-final l10n = AppLocalizations.of(context)!;
+// Preferred: Use the extension
+Text(context.l10n.marketsTitle);
+
+// Alternative: Direct access
+final l10n = AppLocalizations.of(context);
 Text(l10n.marketsTitle);
 ```
 
