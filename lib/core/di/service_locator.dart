@@ -1,3 +1,4 @@
+import 'package:crypto_tracker/core/errors/app_exception.dart';
 import 'package:crypto_tracker/core/logging/app_logger.dart';
 import 'package:crypto_tracker/core/logging/logger.dart';
 import 'package:crypto_tracker/models/ticker.dart';
@@ -18,7 +19,7 @@ import 'package:crypto_tracker/services/search_history_service.dart';
 import 'package:crypto_tracker/services/websocket_config.dart';
 import 'package:crypto_tracker/services/websocket_service.dart';
 import 'package:crypto_tracker/storage/local_storage.dart';
-import 'package:crypto_tracker/storage/objectbox.g.dart';
+import 'package:crypto_tracker/storage/objectbox.g.dart' hide StorageException;
 import 'package:crypto_tracker/storage/objectbox_ticker_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -35,7 +36,12 @@ final sl = GetIt.instance;
 /// Registration order: logging -> storage -> services -> repository -> provider -> router.
 Future<void> setupServiceLocator() async {
   // ObjectBox Store (shared)
-  final store = await openStore();
+  final Store store;
+  try {
+    store = await openStore();
+  } on Exception catch (e, s) {
+    throw StorageException('Failed to open local database: $e', s);
+  }
   final httpClient = http.Client();
 
   // Logging
