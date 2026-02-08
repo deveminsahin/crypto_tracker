@@ -13,18 +13,50 @@ Built as a developer case study for **baseinteractive**.
 
 ## How to Run
 
+### Prerequisites
+
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| Flutter | **3.38+** | Channel: stable |
+| Dart | **3.10+** | Included with Flutter |
+| Java | **17+** | Required for Android builds |
+| Android SDK | **36+** | API 21+ (Android 5.0 Lollipop) minimum |
+| iOS | **15.6+** | Xcode 15+ recommended |
+
+### Setup
+
 ```bash
+# Clone the repository
+git clone https://github.com/deveminsahin/crypto_tracker.git
+cd crypto_tracker
+
+# Verify Flutter installation
+flutter doctor
+
 # Install dependencies
 flutter pub get
 
 # Generate ObjectBox model (required on first build)
 dart run build_runner build
 
+# iOS only: Install CocoaPods dependencies
+cd ios && pod install && cd ..
+
 # Run the app
 flutter run
 ```
 
-Profile mode (performance verification):
+### Build APK (Release)
+
+```bash
+# Single APK (larger, universal)
+flutter build apk --release
+
+# Split per ABI (recommended, smaller)
+flutter build apk --release --split-per-abi
+```
+
+### Profile Mode (Performance Verification)
 
 ```bash
 flutter run --profile
@@ -434,7 +466,11 @@ lib/
       result.dart                    # Result<T> sealed union
     theme/
       app_theme.dart                 # Dark theme + CryptoColors
+    logging/
+      app_logger.dart                # AppLogger implementation
+      logger.dart                    # Logger interface + LogLevel enum
     value_objects/
+      numeric_value.dart             # Abstract NumericValue base
       percentage.dart                # Immutable percentage
       price.dart                     # Immutable price
       volume.dart                    # Immutable volume
@@ -442,6 +478,7 @@ lib/
     app_en.arb                       # English translations
     app_localizations.dart           # Generated
     app_localizations_en.dart        # Generated
+    l10n_extension.dart              # AppLocalizationsX context extension
   models/
     market_category.dart             # Quote-asset filter enum
     mini_ticker.dart                 # WebSocket update model
@@ -454,23 +491,28 @@ lib/
     binance_market_repository.dart   # Binance implementation
   router/
     app_router.dart                  # go_router setup
+    app_navigation_observer.dart     # Navigation event logging
   screens/
     market_list/
       market_list_screen.dart        # Main list screen
+      market_list_mixin.dart         # Non-UI behaviour mixin
       widgets/
         category_tab_bar.dart        # Category filter chips
+        market_list_body.dart        # Body state orchestration
         market_search_field.dart     # Search input
         search_history_chips.dart    # Recent search chips
         sort_header.dart             # Sortable column headers
         ticker_list_view.dart        # Virtualized ticker list
         ticker_row.dart              # Single ticker row
+        ticker_row_mixin.dart        # Flash animation mixin
     market_detail/
       market_detail_screen.dart      # Detail screen
       widgets/
-        price_header.dart            # Symbol + current price
-        price_change_card.dart       # 24h change badge
-        price_range_bar.dart         # High/low range bar
         detail_info_grid.dart        # Statistics grid
+        info_row.dart                # Label-value row widget
+        price_change_card.dart       # 24h change badge
+        price_header.dart            # Symbol + current price
+        price_range_bar.dart         # High/low range bar
   services/
     api_service.dart                 # REST interface
     binance_api_service.dart         # Binance REST implementation
