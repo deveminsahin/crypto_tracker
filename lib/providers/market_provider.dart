@@ -281,7 +281,9 @@ final class MarketProvider extends ChangeNotifier {
       _tickersSubscription = _repository.onTickersUpdated.listen(
         (_) {
           if (_isDisposed) return;
-          _tickers = {for (final t in _repository.cachedTickers) t.symbol: t};
+          for (final t in _repository.cachedTickers) {
+            _tickers[t.symbol] = t;
+          }
           _cachedFilteredTickers = null;
           _notify();
         },
