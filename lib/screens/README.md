@@ -9,20 +9,24 @@ Top-level screen widgets and their decomposed child widgets.
 ### `market_list/`
 
 - `market_list_screen.dart` - Main screen with search, filters, sort, and ticker list.
+- `market_list_mixin.dart` - Encapsulates non-UI behaviour: lifecycle, snackbars, search debouncing, scroll-to-top.
 - `widgets/category_tab_bar.dart` - Quote-asset category chips.
+- `widgets/market_list_body.dart` - Body widget orchestrating skeleton/error/empty/list states.
 - `widgets/market_search_field.dart` - Symbol search text field.
 - `widgets/search_history_chips.dart` - Recent search history action chips.
 - `widgets/sort_header.dart` - Sortable column header row.
 - `widgets/ticker_list_view.dart` - Scrollable `ListView.builder` of ticker rows.
 - `widgets/ticker_row.dart` - Single ticker row with price-flash animation.
+- `widgets/ticker_row_mixin.dart` - Flash animation mixin for ticker rows.
 
 ### `market_detail/`
 
 - `market_detail_screen.dart` - Detail screen for a single trading pair.
-- `widgets/price_header.dart` - Symbol and large current price.
-- `widgets/price_change_card.dart` - 24h change and percentage badge.
-- `widgets/price_range_bar.dart` - Visual low-high range bar with position indicator.
 - `widgets/detail_info_grid.dart` - Key statistics grid (high, low, volume, bid, ask).
+- `widgets/info_row.dart` - Reusable label-value row widget.
+- `widgets/price_change_card.dart` - 24h change and percentage badge.
+- `widgets/price_header.dart` - Symbol and large current price.
+- `widgets/price_range_bar.dart` - Visual low-high range bar with position indicator.
 
 ## Dependencies
 
