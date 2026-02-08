@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 /// - [FlutterError.onError] for framework errors (build, layout, painting)
 /// - [PlatformDispatcher.instance.onError] for platform-level errors
 /// - [runZonedGuarded] for uncaught async errors
-Future<void> bootstrap() => runZonedGuarded(
+Future<void> bootstrap() async => runZonedGuarded(
   () async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -50,7 +50,7 @@ Future<void> bootstrap() => runZonedGuarded(
       debugPrint('Uncaught async error: $error\n$stack');
     }
   },
-)!;
+);
 
 final class _FatalErrorApp extends StatelessWidget {
   final String message;

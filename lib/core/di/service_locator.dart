@@ -50,25 +50,37 @@ Future<void> setupServiceLocator() async {
     // Storage & Providers
     ..registerSingleton<Store>(store)
     ..registerSingleton<http.Client>(httpClient)
-    ..registerSingleton<LocalStorage<Ticker>>(ObjectBoxTickerStorage(store))
+    ..registerSingleton<LocalStorage<Ticker>>(
+      ObjectBoxTickerStorage(store),
+      dispose: (final storage) async => storage.close(),
+    )
     ..registerSingleton<SearchHistoryService>(
       ObjectBoxSearchHistoryService(store),
     )
     ..registerSingleton<SearchHistoryProvider>(
-      SearchHistoryProvider(sl<SearchHistoryService>()),
+      SearchHistoryProvider(sl<SearchHistoryService>(), logger: sl()),
+      dispose: (final p) => p.dispose(),
     )
     // Services
     ..registerLazySingleton<ApiService>(
       () => BinanceApiService(client: sl(), logger: sl()),
+      dispose: (final service) => service.dispose(),
     )
     ..registerLazySingleton<WebSocketService>(
       () => BinanceWebSocketService(
         config: WebSocketConfig.production,
         logger: sl(),
       ),
+      dispose: (final service) => service.dispose(),
     )
-    ..registerLazySingleton<IsolateParser>(BackgroundIsolateParser.new)
-    ..registerLazySingleton<ConnectivityService>(ConnectivityServiceImpl.new)
+    ..registerLazySingleton<IsolateParser>(
+      BackgroundIsolateParser.new,
+      dispose: (final parser) => parser.dispose(),
+    )
+    ..registerLazySingleton<ConnectivityService>(
+      ConnectivityServiceImpl.new,
+      dispose: (final service) => service.dispose(),
+    )
     // Repository
     ..registerLazySingleton<MarketRepository>(
       () => BinanceMarketRepository(
@@ -76,7 +88,9 @@ Future<void> setupServiceLocator() async {
         webSocketService: sl(),
         isolateParser: sl(),
         storage: sl(),
+        logger: sl(),
       ),
+      dispose: (final repo) => repo.dispose(),
     )
     // Provider
     ..registerFactory<MarketProvider>(
