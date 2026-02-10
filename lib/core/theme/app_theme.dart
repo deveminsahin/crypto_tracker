@@ -27,6 +27,10 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
   /// Highlight sweep colour for shimmer animations.
   final Color shimmerHighlight;
 
+  /// Transparent colour used when flash animation is idle.
+  /// Keeps widget tree structure stable for state preservation.
+  final Color flashIdle;
+
   const CryptoColors({
     required this.priceUp,
     required this.priceDown,
@@ -35,6 +39,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
     required this.onPriceBadge,
     required this.shimmerBase,
     required this.shimmerHighlight,
+    required this.flashIdle,
   });
 
   /// Convenience accessor that retrieves [CryptoColors] from the
@@ -51,6 +56,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
     final Color? onPriceBadge,
     final Color? shimmerBase,
     final Color? shimmerHighlight,
+    final Color? flashIdle,
   }) => CryptoColors(
     priceUp: priceUp ?? this.priceUp,
     priceDown: priceDown ?? this.priceDown,
@@ -59,6 +65,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
     onPriceBadge: onPriceBadge ?? this.onPriceBadge,
     shimmerBase: shimmerBase ?? this.shimmerBase,
     shimmerHighlight: shimmerHighlight ?? this.shimmerHighlight,
+    flashIdle: flashIdle ?? this.flashIdle,
   );
 
   @override
@@ -76,6 +83,7 @@ final class CryptoColors extends ThemeExtension<CryptoColors> {
         other.shimmerHighlight,
         t,
       )!,
+      flashIdle: Color.lerp(flashIdle, other.flashIdle, t)!,
     );
   }
 }
@@ -97,6 +105,7 @@ abstract final class AppTheme {
   static const Color _white = Colors.white;
   static const Color _shimmerBase = Color(0xFF2A2A2E);
   static const Color _shimmerHighlight = Color(0xFF3A3A3E);
+  static const Color _flashIdle = Color(0x00000000);
 
   static ThemeData get darkTheme => ThemeData(
     brightness: Brightness.dark,
@@ -118,6 +127,7 @@ abstract final class AppTheme {
         onPriceBadge: _white,
         shimmerBase: _shimmerBase,
         shimmerHighlight: _shimmerHighlight,
+        flashIdle: _flashIdle,
       ),
     ],
     appBarTheme: const AppBarTheme(

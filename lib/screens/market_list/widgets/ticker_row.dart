@@ -42,8 +42,10 @@ class _TickerRowState extends State<TickerRow>
 
     return AnimatedBuilder(
       animation: flashAnimation,
-      builder: (final context, final child) =>
-          Container(color: flashColor(cryptoColors), child: child),
+      builder: (final context, final child) => ColoredBox(
+        color: flashColor(cryptoColors) ?? cryptoColors.flashIdle,
+        child: child,
+      ),
       child: InkWell(
         onTap: _onTap,
         child: Row(
@@ -78,9 +80,7 @@ class _TickerRowState extends State<TickerRow>
                 ),
                 decoration: BoxDecoration(
                   color: changeColor,
-                  borderRadius: BorderRadius.circular(
-                    AppSizes.borderRadiusSm,
-                  ),
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadiusSm),
                 ),
                 child: Text(
                   ticker.priceChangePercent.formatted,
