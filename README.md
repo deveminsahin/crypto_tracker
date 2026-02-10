@@ -103,10 +103,12 @@ graph TD
 
 ```mermaid
 graph LR
-    SL[Service Locator - GetIt] --> Store[ObjectBox Store]
+    SL[Service Locator - GetIt] --> LOG[Logger]
+    SL --> Store[ObjectBox Store]
     SL --> HC[http.Client]
     SL --> LS[LocalStorage]
     SL --> SHS[SearchHistoryService]
+    SL --> SHP[SearchHistoryProvider]
     SL --> API[ApiService]
     SL --> WS[WebSocketService]
     SL --> IP[IsolateParser]
@@ -115,6 +117,9 @@ graph LR
     SL --> MP[MarketProvider]
     SL --> R[GoRouter]
 
+    LS --> Store
+    SHS --> Store
+    SHP --> SHS
     API --> HC
     MR --> API
     MR --> WS
@@ -126,7 +131,7 @@ graph LR
     style SL fill:#0f3460,stroke:#e94560,color:#fff
 ```
 
-Registration order: `Store` -> `http.Client` -> `Storage` -> `Services` -> `Repository` -> `Provider` -> `Router`.
+Registration order: `Logger` -> `Store` -> `http.Client` -> `Storage` -> `Services` -> `Repository` -> `Provider` -> `Router`.
 
 ### Data Flow
 
@@ -202,9 +207,9 @@ Foundation layer shared across the entire application.
 
 - **Constants** - `ApiConstants` (endpoints), `AppConstants` (durations, limits), `AppSizes` (spacing scale), `AppOpacity` (opacity tokens). All use `abstract final class` to prevent instantiation.
 - **Errors** - `sealed class AppException` hierarchy: `NetworkException`, `ParseException`, `WebSocketException`, `StorageException`. Each carries an optional `StackTrace` for debugging.
-- **Result** - `sealed class Result<T>` with `Success<T>` and `Failure<T>`. Enables exhaustive pattern matching via Dart 3 switch expressions. Includes `map<R>()` for data transformation and `when<R>()` for collapsing both branches.
+- **Result** - `sealed class Result<T>` with `Success<T>` and `Failure<T>`. Enables exhaustive pattern matching via Dart 3 switch expressions. Includes `map<R>()` for data transformation, `flatMap<R>()` for chaining `Result`-returning operations, and `when<R>()` for collapsing both branches.
 - **Value Objects** - `Price`, `Percentage`, `Volume` - immutable, with formatted display (`$12,345.67`, `+2.45%`, `1.2B`), type-safe equality, and adaptive decimal precision.
-- **Theme** - Dark-only theme with `CryptoColors` `ThemeExtension` (priceUp green, priceDown red, shimmer gradients).
+- **Theme** - Dark-only theme with `CryptoColors` `ThemeExtension` (priceUp, priceDown, priceNeutral, warning, onPriceBadge, shimmer base/highlight, flashIdle).
 
 ### Models (`lib/models/`)
 
@@ -250,7 +255,7 @@ classDiagram
     Ticker --> MiniTicker : mergeWithMiniTicker()
 ```
 
-- **Ticker** - Full 24h snapshot from REST, updated in-place via `mergeWithMiniTicker()`. Equality based on `symbol` + `lastPrice` for efficient UI diffing.
+- **Ticker** - Full 24h snapshot from REST, updated in-place via `mergeWithMiniTicker()`. Full-field equality for correct `Selector`-based UI diffing.
 - **MiniTicker** - Lightweight WebSocket update (OHLCV only, no bid/ask). Annotated `@immutable`.
 - **MarketCategory** - Enum with `matches(symbol)` strategy method for filtering by quote asset.
 
@@ -429,12 +434,12 @@ graph TD
 | `compute()` | REST response parsing | One-shot, no keep-alive needed |
 | WS throttle (100ms) | Repository buffer + Timer | Cap UI updates at ~10/sec; Binance sends ~1/sec |
 | `Selector<T, R>` | Screens | Granular rebuilds (only on relevant state change) |
-| `RepaintBoundary` | Ticker rows, price header | Isolate frequently-updating paint regions |
+| `RepaintBoundary` (implicit) | Ticker rows via `ListView.builder` | ListView's built-in per-item boundaries isolate paint regions |
 | `ListView.builder` + `itemExtent` | Ticker list | Fixed-height virtualized scrolling |
 | `addAutomaticKeepAlives: false` | Ticker list | Reduce off-screen widget memory |
 | `const` constructors | All widgets | Compile-time widget reuse |
 | Cached `filteredTickers` | MarketProvider | Lazy `??=` with invalidation, avoids redundant filter/sort on every access |
-| Equality on `symbol + lastPrice` | Ticker model | Skip rebuild when price hasn't changed |
+| Full-field equality | Ticker model | Skip rebuild when no datum has changed |
 
 ## Security
 
@@ -450,6 +455,7 @@ graph TD
 ```text
 lib/
   main.dart                          # Entry point
+  bootstrap.dart                     # Global error handling + DI init
   app/
     app.dart                         # Root MaterialApp widget
   core/
